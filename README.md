@@ -25,15 +25,36 @@ brew install git
 winget install --id Git.Git -e --source winget
 ```
 
-3. In GitHub, click **Code** -> **HTTPS** and copy the repository URL.
-4. In your terminal, clone the repository (replace the URL if needed):
+3. Install Docker:
+
+```bash
+# Ubuntu / Debian
+sudo apt update && sudo apt install -y docker.io docker-compose-v2
+sudo usermod -aG docker "$USER"
+```
+
+```bash
+# macOS: install Docker Desktop (required)
+brew install --cask docker
+open -a Docker
+```
+
+```bash
+# Windows (winget)
+winget install -e --id Docker.DockerDesktop
+```
+
+On macOS, Docker Desktop provides Docker dependencies. For day-to-day usage in this repo, use the CLI commands shown below (`docker compose ...`).
+
+4. In GitHub, click **Code** -> **HTTPS** and copy the repository URL.
+5. In your terminal, clone the repository (replace the URL if needed):
 
 ```bash
 git clone https://github.com/marcelo-peluffo/odysseus-setup.git
 cd odysseus-setup
 ```
 
-5. Start the stack:
+6. Start the stack:
 
 ```bash
 cp .env.example .env
@@ -42,7 +63,7 @@ cp .env.example .env
 
 Open `http://localhost:7000`.
 
-6. Find the temporary admin password (show only Odysseus logs):
+7. Find the temporary admin password (show only Odysseus logs):
 
 ```bash
 # Show recent Odysseus logs (not all Docker logs)
