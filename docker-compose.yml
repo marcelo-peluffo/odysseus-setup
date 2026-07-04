@@ -2,27 +2,24 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
-    ports:
-      - "${OLLAMA_BIND:-127.0.0.1}:${OLLAMA_PORT:-11434}:11434"
+    entrypoint: ["/bin/sh", "-lc"]
     environment:
       OLLAMA_MODEL: "${OLLAMA_MODEL:-llama3.2:3b}"
     volumes:
       - ollama_data:/root/.ollama
     command:
-      - /bin/sh
-      - -lc
       - |
         set -eu
         ollama serve &
-        serve_pid=$!
-        trap 'kill -TERM "$serve_pid"; wait "$serve_pid"' INT TERM
+        serve_pid=$$!
+        trap 'kill -TERM "$$serve_pid"; wait "$$serve_pid"' INT TERM
 
         echo "[ollama-init] Waiting for local Ollama API..."
         until ollama list >/dev/null 2>&1; do
           sleep 1
         done
 
-        if ! ollama list | awk 'NR>1 {print $1}' | grep -Fxq "${OLLAMA_MODEL}"; then
+        if ! ollama list | awk 'NR>1 {print $$1}' | grep -Fxq "${OLLAMA_MODEL}"; then
           echo "[ollama-init] Pulling model ${OLLAMA_MODEL}..."
           ollama pull "${OLLAMA_MODEL}"
         else
@@ -30,7 +27,7 @@ services:
         fi
 
         echo "[ollama-init] Ready."
-        wait "$serve_pid"
+        wait "$$serve_pid"
     healthcheck:
       test: ["CMD-SHELL", "ollama list >/dev/null 2>&1"]
       interval: 10s
@@ -62,4 +59,3 @@ services:
 
 volumes:
   ollama_data:
-
