@@ -7,6 +7,34 @@ This repository provides a portable two-container setup:
 
 ## Quick start
 
+1. Open a terminal.
+2. Install Git (run the command for your system):
+
+```bash
+# Ubuntu / Debian
+sudo apt update && sudo apt install -y git
+```
+
+```bash
+# macOS (Homebrew)
+brew install git
+```
+
+```bash
+# Windows (winget)
+winget install --id Git.Git -e --source winget
+```
+
+3. In GitHub, click **Code** -> **HTTPS** and copy the repository URL.
+4. In your terminal, clone the repository (replace the URL if needed):
+
+```bash
+git clone https://github.com/marcelo-peluffo/odysseus-setup.git
+cd odysseus-setup
+```
+
+5. Start the stack:
+
 ```bash
 cp .env.example .env
 ./scripts/up.sh
@@ -14,8 +42,23 @@ cp .env.example .env
 
 Open `http://localhost:7000`.
 
-On first startup, Odysseus prints a temporary admin password in the `odysseus` logs.  
-Log in with user `admin` (or `ODYSSEUS_ADMIN_USER` if overridden) and change the password in Settings.
+6. Find the temporary admin password (show only Odysseus logs):
+
+```bash
+# Show recent Odysseus logs (not all Docker logs)
+docker compose logs --tail=300 odysseus
+
+# If you do not see it yet, keep watching only Odysseus logs
+docker compose logs -f --tail=50 odysseus
+```
+
+Optional filter to highlight likely password lines:
+
+```bash
+docker compose logs --tail=500 odysseus | grep -Ei "temp|temporary|password|admin"
+```
+
+Log in with user `admin` (or `ODYSSEUS_ADMIN_USER` if overridden), then change the password in Settings.
 
 ## Persistent caching
 
